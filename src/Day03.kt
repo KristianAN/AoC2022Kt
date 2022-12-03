@@ -1,28 +1,14 @@
-import java.util.InputMismatchException
+fun Char.valueOf(): Int =
+    if (this.isLowerCase()) this.code.minus(96) else this.code.minus(38)
 
 fun main() {
-    fun part1(input: List<String>): Int = input.fold(0) { acc, s ->
-        if (s.length == 1)  acc
-        else {
-            val char = s.substring(0, s.length / 2).find { char ->
-                s.substring(s.length / 2, s.length).contains(char)
-            }
-            if (char != null) {
-                if (char.isUpperCase())  acc + (char.code - 38)
-                else acc + (char.code - 96)
-            } else {
-                acc
-            }
-        }
-    }
+    fun part1(input: List<String>): Int = input.map { s ->
+        s.chunked(s.length / 2).let { it[0].toSet().intersect(it[1].toSet()) }.toCharArray()[0]
+    }.sumOf { it.valueOf() }
 
     fun part2(input: List<String>): Int = input.chunked(3).map {
-        it[0].first { char -> (it[1].contains(char) && it[2].contains(char)) }.let { char ->
-            if (char.isLowerCase()) char.code.minus(96) else char.code.minus(38)
-        }
-    }.sumOf { it }
-
-    // test if implementation meets criteria from the description, like:
+        it[0].first { char -> (it[1].contains(char) && it[2].contains(char)) }
+    }.sumOf { it.valueOf() }
 
     val input = readInput("day03")
     println(part1(input))
