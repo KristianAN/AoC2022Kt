@@ -17,6 +17,7 @@ fun main() {
     println(part2(input))
 }
 
+
 enum class Move(val value: Int) {
     ROCK(1),
     PAPER(2),
