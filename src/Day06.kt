@@ -1,3 +1,4 @@
+// Without using stdlib windowed
 data class CharAndIndex(val char: Char, val index: Int)
 data class Window(val windowSize: Int, val window: List<CharAndIndex?>) {
 
@@ -8,7 +9,7 @@ data class Window(val windowSize: Int, val window: List<CharAndIndex?>) {
 
     fun len() = this.window.last()?.index?.plus(1) ?: 0
 
-    private fun noNull() = this.window.filterNotNull().size == windowSize
+    private inline fun noNull() = this.window.filterNotNull().size == windowSize
 
     companion object {
         fun new(windowSize: Int): Window = Window(windowSize, List(windowSize) { _ -> null })
@@ -22,10 +23,15 @@ tailrec fun uniqueWindow(window: Window, input: String, index: Int): Window {
     return uniqueWindow(window.update(input[index], index), input, index + 1)
 }
 
+// Using stdlib windowed
+fun String.findUniqueWindow(windowSize: Int, step: Int) = this.asSequence().windowed(windowSize, step).indexOfFirst {
+    it.toSet().size == windowSize
+}.plus(windowSize)
+
 fun main() {
     fun part1(input: List<String>): Int = input.first().uniqueWindow(4).len()
 
-    fun part2(input: List<String>): Int = input.first().uniqueWindow(14).len()
+    fun part2(input: List<String>): Int = input.first().findUniqueWindow(14, 1)
 
     val input = readInput("day06")
     println(part1(input))
